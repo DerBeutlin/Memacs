@@ -37,7 +37,7 @@ class LastFM(Memacs):
         Memacs._parser_parse_args(self)
 
         if self._args.output_format:
-            self._args.output_format = self._args.output_format.decode('utf-8')
+            self._args.output_format = self._args.output_format
 
     def _handle_recent_tracks(self, tracks):
         """parse recent tracks"""
@@ -73,10 +73,10 @@ class LastFM(Memacs):
         try:
 
             if 'lastfm' in self._get_config_option('network'):
-                network = pylast.get_lastfm_network(**options)
+                network = pylast.LastFMNetwork(**options)
 
             if 'librefm' in self._get_config_option('network'):
-                network = pylast.get_librefm_network(**options)
+                network = pylast.LibreFMNetwork(**options)
 
             user = network.get_user(options['username'])
 
