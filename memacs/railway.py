@@ -14,6 +14,8 @@ from .lib.orgformat import OrgFormat
 from .lib.memacs import Memacs
 
 RailwayTicket = namedtuple('RailwayTicket', ['stops', 'stop_times'])
+
+
 class DBTicketParser:
     def __init__(self):
         pass
@@ -40,6 +42,8 @@ class DBTicketParser:
 
     def extract_stops(self, text, departure_date):
         days = [departure_date + dt.timedelta(days=i) for i in range(10)]
+        split_pattern = 'HaltDatumZeit.*\n?Reservierung'
+        text = re.split(split_pattern, text)[1]
         compiled_regex = re.compile(
             '([^\d\n]*)\n?(' + '|'.join([d.strftime('%d.%m.')
                                          for d in days]) + ')(ab|an)')
@@ -77,16 +81,20 @@ class DBTicketParser:
 
     def parse_tickets(self, path):
         text = self.extract_text(path)
-        index = text.find('ckfahrt am')
-        if index != -1:
-            ticket_texts = [text[:index], text[index:]]
+        split_pattern = 'Ihre Reiseverbindung und Reservierung R.?ckfahrt am'
+
+        indexes = [m.start(0) for m in re.finditer(split_pattern, text)]
+        if len(indexes) > 0:
+            ticket_texts = [text[:indexes[0]], text[indexes[0]:]]
         else:
             ticket_texts = [text]
 
         return [self.parse_ticket(text) for text in ticket_texts]
 
+
 class Railway(Memacs):
-    available_parsers={'DB':DBTicketParser}
+    available_parsers = {'DB': DBTicketParser}
+
     def _parser_add_arguments(self):
         """
         overwritten method of class Memacs
@@ -101,7 +109,8 @@ class Railway(Memacs):
           help="path to a folder to search for tickets" +\
                                        "multiple folders can be specified: " + \
                                        "-f /path1 -f /path2")
-        self._parser.add_argument("-C","--Company", dest="company",help="Railway Company [DB]")
+        self._parser.add_argument(
+            "-C", "--Company", dest="company", help="Railway Company [DB]")
 
     def _parser_parse_args(self):
         """
@@ -121,26 +130,36 @@ class Railway(Memacs):
 
         if self._args.company:
             if self._args.company not in self.available_parsers:
-                self._parser.error("There is no parser yet defined for {}".format(self._args.company))
+                self._parser.error(
+                    "There is no parser yet defined for {}".format(
+                        self._args.company))
             else:
-                self.parser= self.available_parsers[self._args.company]()
+                self.parser = self.available_parsers[self._args.company]()
 
         else:
             self.parser.error("You have to provide the company")
-    def __handle_file(self,path):
+
+    def __handle_file(self, path):
         tickets = self.parser.parse_tickets(path)
         for ticket in tickets:
             timestamp = OrgFormat.datetime(ticket.stop_times[0])
             end_timestamp = OrgFormat.datetime(ticket.stop_times[-1])
-            output =OrgFormat.link(link=path,description="Train ride from {} to {}".format(ticket.stops[0],ticket.stops[-1]),replacespaces=False)
+            output = OrgFormat.link(
+                link=path,
+                description="Train ride from {} to {}".format(
+                    ticket.stops[0], ticket.stops[-1]),
+                replacespaces=False)
             properties = OrgProperties(data_for_hashing=output + timestamp)
-            properties.add('ORIGIN',ticket.stops[0])
-            properties.add('DESTINATION',ticket.stops[-1])
-            properties.add('DEPARTURE',OrgFormat.datetime(ticket.stop_times[1]))
-            properties.add('ARRIVAL',OrgFormat.datetime(ticket.stop_times[-1]))
-            self._writer.write_org_subitem(output=output,timestamp=timestamp+'-'+end_timestamp,properties=properties)
-
-
+            properties.add('ORIGIN', ticket.stops[0])
+            properties.add('DESTINATION', ticket.stops[-1])
+            properties.add('DEPARTURE', OrgFormat.datetime(
+                ticket.stop_times[1]))
+            properties.add('ARRIVAL', OrgFormat.datetime(
+                ticket.stop_times[-1]))
+            self._writer.write_org_subitem(
+                output=output,
+                timestamp=timestamp + '-' + end_timestamp,
+                properties=properties)
 
     def _main(self):
         """
@@ -148,8 +167,8 @@ class Railway(Memacs):
         """
 
         for folder in self._args.ticket_folder:
-            for dirpath,_,filenames in os.walk(folder):
+            for dirpath, _, filenames in os.walk(folder):
                 for f in filenames:
                     if f.endswith('.pdf'):
-                        abs_path = os.path.join(dirpath,f)
+                        abs_path = os.path.join(dirpath, f)
                         self.__handle_file(abs_path)
