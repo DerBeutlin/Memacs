@@ -158,3 +158,16 @@ class TestDBTicketParser:
                 'KÀln Hbf', 'Mainz Hbf', 'Mainz Hbf', 'Stuttgart Hbf',
                 'Stuttgart Hbf (tief)', 'Schwaikheim'
             ]
+        def test_stop_times(self):
+            assert self.tickets[0].stop_times[0] == dt.datetime(
+                year=2012, month=10, day=27, hour=5, minute=53)
+            assert self.tickets[0].stop_times[1] == dt.datetime(
+                year=2012, month=10, day=27, hour=7, minute=38)
+            assert self.tickets[0].stop_times[2] == dt.datetime(
+                year=2012, month=10, day=27, hour=7, minute=46)
+            assert self.tickets[0].stop_times[3] == dt.datetime(
+                year=2012, month=10, day=27, hour=9, minute=24)
+            assert self.tickets[0].stop_times[4] == dt.datetime(
+                year=2012, month=10, day=27, hour=9, minute=45)
+            assert self.tickets[0].stop_times[5] == dt.datetime(
+                year=2012, month=10, day=27, hour=10, minute=5)
