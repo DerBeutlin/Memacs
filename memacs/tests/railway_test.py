@@ -19,7 +19,6 @@ class TestFoo(unittest.TestCase):
         memacs = Railway(argv=argv.split())
         data = memacs.test_get_entries()
 
-
         self.assertEqual(
             data[0],
             "** <2012-10-27 Sat 05:53>-<2012-10-27 Sat 10:05> [[{}/old.pdf][Train ride from KÀln Hbf to Schwaikheim]]".format(path)
@@ -27,11 +26,11 @@ class TestFoo(unittest.TestCase):
         self.assertEqual(data[1], "   :PROPERTIES:")
         self.assertEqual(data[2], "   :ORIGIN:      KÀln Hbf")
         self.assertEqual(data[3], "   :DESTINATION: Schwaikheim")
-        self.assertEqual(data[4], "   :DEPARTURE:   <2012-10-27 Sat 07:38>")
+        self.assertEqual(data[4], "   :DEPARTURE:   <2012-10-27 Sat 05:53>")
         self.assertEqual(data[5], "   :ARRIVAL:     <2012-10-27 Sat 10:05>")
         self.assertEqual(
             data[6],
-            "   :ID:          095c72924ae90e650e9fd7c2438b1d47413af266")
+            "   :ID:          c26903013ed1d4ac68b997b876cde0431960a7fe")
         self.assertEqual(data[7], "   :END:")
         self.assertEqual(
             data[8],
@@ -40,11 +39,11 @@ class TestFoo(unittest.TestCase):
         self.assertEqual(data[9], "   :PROPERTIES:")
         self.assertEqual(data[10], "   :ORIGIN:      Mannheim Hbf")
         self.assertEqual(data[11], "   :DESTINATION: Schwaikheim")
-        self.assertEqual(data[12], "   :DEPARTURE:   <2018-09-17 Mon 18:46>")
+        self.assertEqual(data[12], "   :DEPARTURE:   <2018-09-17 Mon 18:00>")
         self.assertEqual(data[13], "   :ARRIVAL:     <2018-09-17 Mon 19:21>")
         self.assertEqual(
             data[14],
-            "   :ID:          87753377b46ce152b002fd9c2ceccab5a936c827")
+            "   :ID:          7f1ca158357035c01b2fa46358822767a68aa343")
         self.assertEqual(data[15], "   :END:")
         self.assertEqual(
             data[16],
@@ -53,11 +52,11 @@ class TestFoo(unittest.TestCase):
         self.assertEqual(data[17], "   :PROPERTIES:")
         self.assertEqual(data[18], "   :ORIGIN:      Schwaikheim")
         self.assertEqual(data[19], "   :DESTINATION: Mannheim Hbf")
-        self.assertEqual(data[20], "   :DEPARTURE:   <2018-09-19 Wed 21:15>")
+        self.assertEqual(data[20], "   :DEPARTURE:   <2018-09-19 Wed 20:53>")
         self.assertEqual(data[21], "   :ARRIVAL:     <2018-09-19 Wed 22:29>")
         self.assertEqual(
             data[22],
-            "   :ID:          4e89a5079544e50cf94116ee79b315ddc46da277")
+            "   :ID:          071b6ed3d83b5026b9b0e51bb4c48c021a9dfbeb")
         self.assertEqual(data[23], "   :END:")
         self.assertEqual(
             data[24],
@@ -66,11 +65,11 @@ class TestFoo(unittest.TestCase):
         self.assertEqual(data[25], "   :PROPERTIES:")
         self.assertEqual(data[26], "   :ORIGIN:      Schwaikheim")
         self.assertEqual(data[27], "   :DESTINATION: Heidelberg Hbf")
-        self.assertEqual(data[28], "   :DEPARTURE:   <2018-06-24 Sun 16:15>")
+        self.assertEqual(data[28], "   :DEPARTURE:   <2018-06-24 Sun 15:53>")
         self.assertEqual(data[29], "   :ARRIVAL:     <2018-06-24 Sun 17:18>")
         self.assertEqual(
             data[30],
-            "   :ID:          d6e94fe3ccc0174073b69105c7516df9658631a3")
+            "   :ID:          45155ca4119e43a71adc39a34c435904b7e81349")
         self.assertEqual(data[31], "   :END:")
 
     def tearDown(self):
@@ -158,6 +157,7 @@ class TestDBTicketParser:
                 'KÀln Hbf', 'Mainz Hbf', 'Mainz Hbf', 'Stuttgart Hbf',
                 'Stuttgart Hbf (tief)', 'Schwaikheim'
             ]
+
         def test_stop_times(self):
             assert self.tickets[0].stop_times[0] == dt.datetime(
                 year=2012, month=10, day=27, hour=5, minute=53)

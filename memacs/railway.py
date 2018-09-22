@@ -158,7 +158,7 @@ class Railway(Memacs):
             properties.add('ORIGIN', ticket.stops[0])
             properties.add('DESTINATION', ticket.stops[-1])
             properties.add('DEPARTURE', OrgFormat.datetime(
-                ticket.stop_times[1]))
+                ticket.stop_times[0]))
             properties.add('ARRIVAL', OrgFormat.datetime(
                 ticket.stop_times[-1]))
             self._writer.write_org_subitem(
