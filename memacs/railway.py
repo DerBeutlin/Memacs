@@ -75,6 +75,8 @@ class DBTicketParser:
 
     def parse_ticket(self, text):
         departure_date = self.extract_date(text)
+        if not departure_date:
+            raise ValueError('Departure Date could not be extracted')
         stops = self.extract_stops(text, departure_date)
         stop_times = self.extract_stop_times(text, stops, departure_date)
         return RailwayTicket(stops=stops, stop_times=stop_times)
@@ -140,7 +142,10 @@ class Railway(Memacs):
             self.parser.error("You have to provide the company")
 
     def __handle_file(self, path):
-        tickets = self.parser.parse_tickets(path)
+        try:
+            tickets = self.parser.parse_tickets(path)
+        except ValueError as e:
+            return None
         for ticket in tickets:
             timestamp = OrgFormat.datetime(ticket.stop_times[0])
             end_timestamp = OrgFormat.datetime(ticket.stop_times[-1])
