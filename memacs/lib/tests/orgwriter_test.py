@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2012-04-16 22:59:38 armin>
+# Time-stamp: <2018-09-22 13:42:19 vk>
 
 import codecs
-import os
 import shutil
 import time
 import tempfile
@@ -141,9 +140,10 @@ class TestOutputWriter(unittest.TestCase):
         input_handler = file_handler.readlines()
         file_handler.close()
 
-        self.assertEqual(input_handler[4],
-                         "** <1970-01-01 Thu 00:00> Programming for my " + \
-                         "bachelor thesis at University\t:programming:TUG:\n")
+        self.assertTrue(input_handler[4].startswith("** <1970-01-01 Thu 00:00> Programming for my " +
+                         "bachelor thesis at University\t:"))
+        self.assertTrue(input_handler[4].endswith("programming:TUG:\n") or
+                        input_handler[4].endswith("TUG:programming:\n"))
 
 
 if __name__ == '__main__':
